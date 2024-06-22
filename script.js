@@ -1,3 +1,8 @@
+// import uuidv4 from "./modules/uuid.js"
+import createDraggableStuff from "./modules/draggable.js";
+
+
+
 function calculateNumberOfSquares() {
     const viewportWidth = window.innerWidth;
     console.log(viewportWidth, 'viewportWidth')
@@ -24,7 +29,7 @@ setInterval(updateDateTime, 1000);
 
 
 const createDivs = (total) => {
-    screenElem = document.getElementById('screen')
+    const screenElem = document.getElementById('screen')
     for (let i = 0; i < total; i++) {
         const div = document.createElement('div');
         div.id = 'div' + i
@@ -34,9 +39,8 @@ const createDivs = (total) => {
 }
 createDivs(calculateNumberOfSquares()[2])
 
-
-function resizedw() {
-    // Haven't resized in 100ms!
+//watch window and replace icons if resized
+function resizeScreen() {
 
     //remove all childen of screen element
     const screenElement = document.getElementById("screen");
@@ -53,7 +57,7 @@ let doit;
 window.addEventListener("resize", (event) => {
     //wait till resize finish
     clearTimeout(doit);
-    doit = setTimeout(resizedw, 500);
+    doit = setTimeout(resizeScreen, 20);
 
 
 });
@@ -159,32 +163,10 @@ const createModal = (text) => {
     topPos += 20
     divElem.style.left = leftPos + 'px'
     divElem.style.top = topPos + 'px'
-    //draggable stuff
-    let startX = 0;
-    let startY = 0;
-    let offsetX = 0;
-    let offsetY = 0;
-    divElem.addEventListener('mousedown', mouseDown)
+    createDraggableStuff(divElem)
+    //make uuid stuff here to pass onto the modal
 
-    function mouseDown(e) {
-        startX = e.clientX;
-        startY = e.clientY;
-        document.addEventListener('mousemove', mouseMove);
-        document.addEventListener('mouseup', mouseUp);
-        const transform = getComputedStyle(divElem).transform;
-        divElem.style.transition = ''
-        const transformMatch = transform.match(/[-+]?[\d]*\.?[\d]+/g) || [0, 0, 0];
-        offsetX = parseFloat(transformMatch[4]) || 0;
-        offsetY = parseFloat(transformMatch[5]) || 0;
-    }
-
-    function mouseMove(e) {
-        const newX = offsetX + e.clientX - startX;
-        const newY = offsetY + e.clientY - startY;
-        divElem.style.transform = `translate3d(${newX}px, ${newY}px, 0) `;
-    }
-    function mouseUp(e) {
-        document.removeEventListener('mousemove', mouseMove)
-        document.removeEventListener('mouseup', mouseUp);
-    }
 }
+
+
+
