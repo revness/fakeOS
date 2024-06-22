@@ -1,0 +1,71 @@
+@import "./_css-reset.css";
+body {
+  height: 100vh;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+#top-bar {
+  width: 100vw;
+  flex-direction: row;
+  display: flex;
+  height: 20px;
+  background-color: lightgray;
+  position: relative;
+}
+
+#screen {
+  width: 100vw;
+  height: 100vh- 20px;
+}
+
+#apple-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1px;
+}
+
+#file {
+  font-size: 0.9em;
+  margin-left: 0.25em;
+}
+
+#file:hover {
+  background-color: black;
+  color: white;
+}
+
+#edit {
+  font-size: 0.9em;
+  margin-left: 0.25em;
+}
+
+#edit:hover {
+  background-color: black;
+  color: white;
+}
+
+#view {
+  font-size: 0.9em;
+  margin-left: 0.25em;
+}
+
+#view:hover {
+  background-color: black;
+  color: white;
+}
+
+#special {
+  font-size: 0.9em;
+  margin-left: 0.25em;
+}
+
+#special:hover {
+  background-color: black;
+  color: white;
+}
+
+/*# sourceMappingURL=output.css.map */
