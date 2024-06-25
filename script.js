@@ -1,20 +1,17 @@
-// import uuidv4 from "./modules/uuid.js"
 import createDraggableStuff from "./modules/draggable.js";
+import uuidv4 from "./modules/ uuid.js";
+import { notesApp } from "./modules/notes.js";
+import { paintApp } from "./modules/paint.js";
+import { filesystem } from "./modules/filesystem.js";
 
 
 
-function calculateNumberOfSquares() {
+function calculateNumberOfSquares(width, height) {
     const viewportWidth = window.innerWidth;
-    console.log(viewportWidth, 'viewportWidth')
     const viewportHeight = window.innerHeight - 30;
-    console.log(viewportHeight, 'viewportHeight')
-
-    const minGridItemWidth = 80; // Assuming 1rem = 16px, so 5rem = 80px (converted to pixels)
-    const minGridItemHeight = 80; // Assuming 1rem = 16px, so 5rem = 80px (converted to pixels)
-
     // Calculate number of columns that can fit
-    const numColumns = Math.floor(viewportWidth / minGridItemWidth);
-    const numRows = Math.floor(viewportHeight / minGridItemHeight)
+    const numColumns = Math.floor(viewportWidth / width);
+    const numRows = Math.floor(viewportHeight / height)
     const total = numColumns * numRows
 
     return [numColumns, numRows, total]
@@ -33,39 +30,16 @@ const createDivs = (total) => {
     for (let i = 0; i < total; i++) {
         const div = document.createElement('div');
         div.id = 'div' + i
-        div.textContent = ""
+        div.textContent = ''
         screenElem.appendChild(div);
     }
 }
-createDivs(calculateNumberOfSquares()[2])
-
-//watch window and replace icons if resized
-function resizeScreen() {
-
-    //remove all childen of screen element
-    const screenElement = document.getElementById("screen");
-    while (screenElement.firstChild) {
-        screenElement.removeChild(screenElement.lastChild);
-    }
-    createDivs(calculateNumberOfSquares()[2])
-    createDisk()
-    createMacPaint()
-    createMacNotes()
-    createTrash()
-}
-let doit;
-window.addEventListener("resize", (event) => {
-    //wait till resize finish
-    clearTimeout(doit);
-    doit = setTimeout(resizeScreen, 20);
+createDivs(calculateNumberOfSquares(80, 80)[2])
 
 
-});
 
 const createDisk = () => {
-    console.log('runs creatediskicon')
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares()[0] - 1}`)
-    console.log(storeDiv)
+    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] - 1}`)
     const imageElem = document.createElement('img')
     imageElem.src = 'https://img.icons8.com/ios/100/save-as.png'
     imageElem.setAttribute('height', 60)
@@ -75,13 +49,11 @@ const createDisk = () => {
     storeDiv.appendChild(diskText)
     storeDiv.addEventListener('dblclick', () => {
         console.log('doubleclicked!')
-        createModal('disk')
+        createModal('disk', filesystem)
     })
 }
 const createMacPaint = () => {
-    console.log('runs creatediskicon')
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares()[0] * 2 - 1}`)
-    console.log(storeDiv)
+    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 2 - 1}`)
     const imageElem = document.createElement('img')
     imageElem.src = 'https://img.icons8.com/wired/64/microsoft-paint.png'
     imageElem.setAttribute('height', 60)
@@ -91,13 +63,11 @@ const createMacPaint = () => {
     storeDiv.appendChild(diskText)
     storeDiv.addEventListener('dblclick', () => {
         console.log('doubleclicked!')
-        createModal('Mac Paint')
+        createModal('Mac Paint', paintApp)
     })
 }
 const createMacNotes = () => {
-    console.log('runs creatediskicon')
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares()[0] * 3 - 1}`)
-    console.log(storeDiv)
+    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 3 - 1}`)
     const imageElem = document.createElement('img')
     imageElem.src = 'https://img.icons8.com/ios/50/notepad.png'
     imageElem.setAttribute('height', 60)
@@ -107,13 +77,12 @@ const createMacNotes = () => {
     storeDiv.appendChild(diskText)
     storeDiv.addEventListener('dblclick', () => {
         console.log('doubleclicked!')
-        createModal('Mac Notes')
+        createModal('Mac Notes', notesApp)
+
     })
 }
 const createTrash = () => {
-    console.log('runs creatediskicon')
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares()[0] * 4 - 1}`)
-    console.log(storeDiv)
+    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 4 - 1}`)
     const imageElem = document.createElement('img')
     imageElem.src = 'https://img.icons8.com/ios/50/trash--v1.png'
     imageElem.setAttribute('height', 60)
@@ -133,28 +102,60 @@ createMacPaint()
 createMacNotes()
 createTrash()
 
+//watch window and replace icons if resized
+function resizeScreen() {
+    const div = document.querySelector('#screen > div');
+    const rect = div.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    //remove all childen of screen element
+    const screenElement = document.getElementById("screen");
+    while (screenElement.firstChild) {
+        screenElement.removeChild(screenElement.lastChild);
+    }
+    createDivs(calculateNumberOfSquares(width, height)[2])
+    createDisk()
+    createMacPaint()
+    createMacNotes()
+    createTrash()
+}
+resizeScreen()// run once to calculate actual number of divs required based upon generated div size
+let doit;
+window.addEventListener("resize", (event) => {
+    //wait till resize finish
+    clearTimeout(doit);
+    doit = setTimeout(resizeScreen, 20);
+
+
+});
+
 
 //function to make modals
 let leftPos = 0
 let topPos = 0
-const createModal = (text) => {
+const createModal = (text, func) => {
     const screenElem = document.getElementById('screen')
     const divElem = document.createElement('div')
+    const mainElem = document.createElement('div')
+    mainElem.className = 'modal__mainElem'
+    func(mainElem, uuidv4())
     const modalBar = document.createElement('div')
     const textNode = document.createTextNode(text)
     modalBar.appendChild(textNode)
     divElem.className = 'modal'
-    modalBar.className = 'modalBar'
+    modalBar.className = 'modal__bar'
 
     //create close button which is a small square.
     const closeButton = document.createElement('div')
-    closeButton.className = 'close-btn'
+    closeButton.className = 'modal__close-btn'
     modalBar.appendChild(closeButton)
     closeButton.addEventListener('click', () => {
         screenElem.removeChild(divElem)
     })
 
     divElem.appendChild(modalBar)
+    divElem.appendChild(mainElem)
     screenElem.appendChild(divElem)
     divElem.style.height = '200px'
     divElem.style.width = '300px'
@@ -164,7 +165,6 @@ const createModal = (text) => {
     divElem.style.left = leftPos + 'px'
     divElem.style.top = topPos + 'px'
     createDraggableStuff(divElem)
-    //make uuid stuff here to pass onto the modal
 
 }
 

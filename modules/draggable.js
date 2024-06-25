@@ -5,7 +5,8 @@ export default function createDraggableStuff(divElem) {
     let startY = 0;
     let offsetX = 0;
     let offsetY = 0;
-    divElem.addEventListener('mousedown', mouseDown)
+    const firstChildEl = divElem.firstChild
+    firstChildEl.addEventListener('mousedown', mouseDown)
 
     function mouseDown(e) {
         startX = e.clientX;
