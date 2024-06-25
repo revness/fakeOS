@@ -6,6 +6,7 @@ export default function createDraggableStuff(divElem) {
     let offsetX = 0;
     let offsetY = 0;
     const firstChildEl = divElem.firstChild
+    //selects modal_bar, as clicking on the actual div will need to be not bound, as we need to add to canvas or select form for notes.
     firstChildEl.addEventListener('mousedown', mouseDown)
 
     function mouseDown(e) {

@@ -3,7 +3,9 @@ import uuidv4 from "./modules/ uuid.js";
 import { notesApp } from "./modules/notes.js";
 import { paintApp } from "./modules/paint.js";
 import { filesystem } from "./modules/filesystem.js";
-
+import { trash } from "./modules/trash.js";
+import setConfettiListener from "./modules/special.js"
+import { singleClickQueue } from "./modules/data.js";
 
 
 function calculateNumberOfSquares(width, height) {
@@ -24,7 +26,6 @@ const updateDateTime = () => {
 }
 setInterval(updateDateTime, 1000);
 
-
 const createDivs = (total) => {
     const screenElem = document.getElementById('screen')
     for (let i = 0; i < total; i++) {
@@ -36,71 +37,35 @@ const createDivs = (total) => {
 }
 createDivs(calculateNumberOfSquares(80, 80)[2])
 
-
-
-const createDisk = () => {
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] - 1}`)
+const createIcons = (order, image, name, func) => {
+    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * order - 1}`)
+    const iconDiv = document.createElement('div')
+    iconDiv.className = 'icon'
     const imageElem = document.createElement('img')
-    imageElem.src = 'https://img.icons8.com/ios/100/save-as.png'
+    imageElem.src = image
     imageElem.setAttribute('height', 60)
     imageElem.setAttribute('width', 60)
-    storeDiv.appendChild(imageElem)
-    const diskText = document.createTextNode('Mac OS 1.1')
-    storeDiv.appendChild(diskText)
-    storeDiv.addEventListener('dblclick', () => {
-        console.log('doubleclicked!')
-        createModal('disk', filesystem)
+    iconDiv.appendChild(imageElem)
+    const diskText = document.createTextNode(name)
+    iconDiv.appendChild(diskText)
+    iconDiv.id = name
+    storeDiv.appendChild(iconDiv)
+    storeDiv.addEventListener('click', () => {
+        singleClickQueue.push({
+            type: 'icon',
+            name: name,
+        })
     })
-}
-const createMacPaint = () => {
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 2 - 1}`)
-    const imageElem = document.createElement('img')
-    imageElem.src = 'https://img.icons8.com/wired/64/microsoft-paint.png'
-    imageElem.setAttribute('height', 60)
-    imageElem.setAttribute('width', 60)
-    storeDiv.appendChild(imageElem)
-    const diskText = document.createTextNode('MacPaint')
-    storeDiv.appendChild(diskText)
     storeDiv.addEventListener('dblclick', () => {
-        console.log('doubleclicked!')
-        createModal('Mac Paint', paintApp)
-    })
-}
-const createMacNotes = () => {
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 3 - 1}`)
-    const imageElem = document.createElement('img')
-    imageElem.src = 'https://img.icons8.com/ios/50/notepad.png'
-    imageElem.setAttribute('height', 60)
-    imageElem.setAttribute('width', 60)
-    storeDiv.appendChild(imageElem)
-    const diskText = document.createTextNode('MacNotes')
-    storeDiv.appendChild(diskText)
-    storeDiv.addEventListener('dblclick', () => {
-        console.log('doubleclicked!')
-        createModal('Mac Notes', notesApp)
-
-    })
-}
-const createTrash = () => {
-    const storeDiv = document.getElementById(`div${calculateNumberOfSquares(80, 80)[0] * 4 - 1}`)
-    const imageElem = document.createElement('img')
-    imageElem.src = 'https://img.icons8.com/ios/50/trash--v1.png'
-    imageElem.setAttribute('height', 60)
-    imageElem.setAttribute('width', 60)
-    storeDiv.appendChild(imageElem)
-    const diskText = document.createTextNode('Trash')
-    storeDiv.appendChild(diskText)
-    storeDiv.addEventListener('dblclick', () => {
-        console.log('doubleclicked!')
-        createModal('Trash')
+        createModal(name, func)
     })
 }
 
 //build desktop icons
-createDisk()
-createMacPaint()
-createMacNotes()
-createTrash()
+createIcons(1, 'https://img.icons8.com/ios/100/save-as.png', 'MacOS_1.1', filesystem)
+createIcons(2, 'https://img.icons8.com/wired/64/microsoft-paint.png', 'MacPaint', paintApp)
+createIcons(3, 'https://img.icons8.com/ios/50/notepad.png', 'MacNotes', notesApp)
+createIcons(4, 'https://img.icons8.com/ios/50/trash--v1.png', 'Trash', trash)
 
 //watch window and replace icons if resized
 function resizeScreen() {
@@ -115,19 +80,18 @@ function resizeScreen() {
         screenElement.removeChild(screenElement.lastChild);
     }
     createDivs(calculateNumberOfSquares(width, height)[2])
-    createDisk()
-    createMacPaint()
-    createMacNotes()
-    createTrash()
+    createIcons(1, 'https://img.icons8.com/ios/100/save-as.png', 'MacOS_1.1', filesystem)
+    createIcons(2, 'https://img.icons8.com/wired/64/microsoft-paint.png', 'MacPaint', paintApp)
+    createIcons(3, 'https://img.icons8.com/ios/50/notepad.png', 'MacNotes', notesApp)
+    createIcons(4, 'https://img.icons8.com/ios/50/trash--v1.png', 'Trash', trash)
 }
 resizeScreen()// run once to calculate actual number of divs required based upon generated div size
+
 let doit;
 window.addEventListener("resize", (event) => {
-    //wait till resize finish
     clearTimeout(doit);
+    //wait till resize by user finishes before trying to regenerate divs
     doit = setTimeout(resizeScreen, 20);
-
-
 });
 
 
@@ -164,9 +128,9 @@ const createModal = (text, func) => {
     topPos += 20
     divElem.style.left = leftPos + 'px'
     divElem.style.top = topPos + 'px'
+    //add mousedown, up listeners to divElem, well- the child of it as we dont want the full div to be listened
     createDraggableStuff(divElem)
 
 }
-
-
-
+//special button
+setConfettiListener()
