@@ -1,6 +1,8 @@
 
 export default function createDraggableStuff(divElem) {
-
+    divElem.addEventListener('click', (e) => {
+        console.log(e)
+    })
     let startX = 0;
     let startY = 0;
     let offsetX = 0;

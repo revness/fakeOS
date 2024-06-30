@@ -1,99 +1,75 @@
-import { data } from "./data.js"
+import { currentMenuContext, data } from "./data.js"
+import { addMenuButtonClasses } from "./menu-btns.js"
 /*
  function that passes in the div element from the createmodal, 
 attaches a canvas box and save button.
 save button saves the data to a data array.
 */
-export const paintApp = (elem, id) => {
 
-    const div = document.createElement('div')
+export const paintApp = (elem, id, contextItem) => {
+    console.log(data, 'data')
+    console.log(currentMenuContext, 'currentMenuContext')
+
+
     const canvasArea = document.createElement('canvas')
-    canvasArea.height = 100
-    canvasArea.width = 100
-    canvasArea.style.backgroundColor = 'white'
-
-    let context = canvasArea.getContext("2d");
-    let stroke_color = 'black';
-    let stroke_width = "2";
-    let is_drawing = false;
-    function start(event) {
-        is_drawing = true;
-        context.beginPath();
-        context.moveTo(getX(event), getY(event));
-        event.preventDefault();
-    }
-
-    function draw(event) {
-        if (is_drawing) {
-            context.lineTo(getX(event), getY(event));
-            context.strokeStyle = stroke_color;
-            context.lineWidth = stroke_width;
-            context.lineCap = "round";
-            context.lineJoin = "round";
-            context.stroke();
-        }
-        event.preventDefault();
-    }
-
-    function stop(event) {
-        if (is_drawing) {
-            context.stroke();
-            context.closePath();
-            is_drawing = false;
-        }
-        event.preventDefault();
-
-    }
-
-    function getX(event) {
-        console.log(event.pageX)
-        console.log(canvasArea.offsetLeft)
-        if (event.pageX == undefined) { return event.targetTouches[0].pageX - canvasArea.offsetLeft }
-        else { return event.pageX - canvasArea.offsetLeft }
-    }
-
-
-    function getY(event) {
-        if (event.pageY == undefined) { return event.targetTouches[0].pageY - canvasArea.offsetTop }
-        else { return event.pageY - canvasArea.offsetTop }
-    }
-
-    canvasArea.addEventListener("mousedown", start, false);
-    canvasArea.addEventListener("mousemove", draw, false);
-    canvasArea.addEventListener("mouseup", stop, false);
-
-
-
-
-    div.className = 'modal__canvasArea'
     canvasArea.id = id
-    div.appendChild(canvasArea)
-    elem.appendChild(div)
+    console.log(canvasArea.id)
+    canvasArea.className = "canvas1"
+    const ctx = canvasArea.getContext('2d')
+    canvasArea.height = 175
+    canvasArea.width = 300
 
-    //create a button to save, which pushes it to data as a note, with type note, and uuid id value.
-    const button = document.createElement('button')
-    button.innerText = 'Save'
-    button.addEventListener('click', () => {
+    if (contextItem) {
+        let img = new Image();
+        img.src = contextItem.data
+        console.log(img.src)
+        img.onload = function () {
+            // Draw the image onto the canvas
+            ctx.drawImage(img, 0, 0, canvasArea.width, canvasArea.height); // Adjust as needed
 
-        let index = data.findIndex(item => item.id == id)
-        let canvasRef = document.getElementById(id)
-        let canvasData = canvasRef.toDataURL()
-        console.log(canvasData)
-        if (index === -1) {
-            //not in data push to data
-            data.push({
-                type: 'canvas',
-                data: canvasData,
-                id: id,
-                deleted: false
-            })
+        };
+        contextItem.status = "temp"
+        currentMenuContext[0] = contextItem
+        console.log(currentMenuContext[0])
+        addMenuButtonClasses()
+    }
+
+
+    let isPainting = false;
+    let lineWidth = 5;
+
+    const mouse = {
+        x: undefined,
+        y: undefined
+    }
+    const draw = e => {
+        if (!isPainting) {
+            return
         }
-        else {
-            //in data, update that index with new data
-            data[index].data = canvasData
-        }
-        console.log(data)
+        const rect = canvasArea.getBoundingClientRect()
 
+        ctx.lineWidth = lineWidth
+        ctx.linecap = 'round'
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top)
+        ctx.stroke()
+    }
+    canvasArea.addEventListener('mousedown', (e) => {
+        const rect = canvasArea.getBoundingClientRect()
+
+        mouse.x = e.x - rect.left
+        mouse.y = e.y - rect.top
+        isPainting = true
     })
-    elem.appendChild(button)
+
+    canvasArea.addEventListener('mousemove', draw
+    )
+    canvasArea.addEventListener('mouseup', (e) => {
+        isPainting = false;
+        ctx.stroke()
+        ctx.beginPath()
+    })
+
+    elem.appendChild(canvasArea)
+
+
 }
