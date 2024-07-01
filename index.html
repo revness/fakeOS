@@ -4,16 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Retro macOS</title>
-    <script src="./script.js" defer></script>
+    <script type="module" src="./script.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"
+      defer
+    ></script>
+
     <link rel="stylesheet" href="./output.css" />
   </head>
   <body>
     <div id="top-bar">
       <div id="apple-icon">🍏</div>
-      <div id="file">File</div>
-      <div id="edit">Edit</div>
-      <div id="view">View</div>
+      <div class="dropdown" id="file">
+        File
+        <div class="dropdown-content">
+          <div id="save">Save</div>
+          <div id="delete">Delete</div>
+        </div>
+      </div>
+      <div id="open">Open</div>
       <div id="special">Special</div>
+      <div id="datetime"><span id="datetimeSpan"></span></div>
     </div>
     <div id="screen"></div>
   </body>
