@@ -105,7 +105,11 @@ export const openModal = (contextItem) => {
 }
 export const addAppleListeners = () => {
     let dataRef = data.filter(el => el.title == 'About')[0]
+
     document.getElementById('apple-icon').addEventListener('click', () => {
+        if (dataRef.status == 'deleted') {
+            dataRef.data = 'You deleted me!'
+        }
         currentMenuContext[0] = {
             id: dataRef.id,
             type: dataRef.type,
