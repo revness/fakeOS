@@ -2,9 +2,10 @@
 import setConfettiListener from "./modules/special.js"
 import { currentMenuContext } from "./modules/data.js";
 import { addMenuButtonClasses, addMenuListeners } from "./modules/menu-btns.js";
-import { createModal } from "./modules/createModals.js";
+import { addAppleListeners, createModal, openModal } from "./modules/createModals.js";
 import { iconDetails } from "./modules/data.js"
 import uuidv4 from "./modules/uuid.js";
+import { data } from "./modules/data.js";
 
 
 
@@ -104,3 +105,4 @@ addMenuListeners()
 
 
 
+addAppleListeners()

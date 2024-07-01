@@ -99,6 +99,7 @@ export const addMenuListeners = () => {
                     const type = currentMenuContext[0].type
                     console.log('open')
                     const uuid = uuidv4()
+                    console.log(currentMenuContext[0])
 
                     if (app == 'MacPaint' && type == 'icon')  // macpaint app, new canvas
                     {

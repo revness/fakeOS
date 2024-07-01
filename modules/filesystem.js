@@ -28,7 +28,7 @@ export const filesystem = (elem) => {
                 divEl.appendChild(imgEl)
 
             }
-            const textNode = document.createTextNode(item.type)
+            const textNode = document.createTextNode(item.title || item.type)
             divEl.appendChild(textNode)
             divEl.addEventListener('click', () => {
                 //add context to currentmenu context

@@ -16,6 +16,7 @@ let topPos = 0
 export const createModal = (text, func, id) => {
 
     const screenElem = document.getElementById('screen')
+
     const divElem = document.createElement('div')
     const mainElem = document.createElement('div')
     mainElem.className = 'modal__mainElem'
@@ -101,4 +102,18 @@ export const openModal = (contextItem) => {
     divElem.style.top = topPos + 'px'
     //add mousedown, up listeners to divElem, well- the child of it as we dont want the full div to be listened
     createDraggableStuff(divElem)
+}
+export const addAppleListeners = () => {
+    let dataRef = data.filter(el => el.title == 'About')[0]
+    document.getElementById('apple-icon').addEventListener('click', () => {
+        currentMenuContext[0] = {
+            id: dataRef.id,
+            type: dataRef.type,
+            data: dataRef.data,
+            status: dataRef.status,
+            app: dataRef.app,
+            title: dataRef.title
+        }
+        openModal(currentMenuContext[0])
+    })
 }

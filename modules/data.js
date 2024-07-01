@@ -4,7 +4,14 @@ import { notesApp } from "./notes.js"
 import { trash } from "./trash.js"
 
 
-export const data = []
+export const data = [{
+    type: 'note',
+    data: 'A fakeOS app built in html and vanillaJS by chappo.io',
+    id: 1,
+    status: 'saved',
+    app: 'MacNotes',
+    title: 'About'
+}]
 
 
 //idea is, single click = 'select' we can use nav bar to know what context we have for the save view open delete actions etc.

@@ -1,7 +1,11 @@
+import { currentMenuContext } from "./data.js";
+import { addMenuButtonClasses } from "./menu-btns.js";
+import { data } from "./data.js";
 
 export default function createDraggableStuff(divElem) {
     divElem.addEventListener('click', (e) => {
-        console.log(e)
+        console.log(e.target.id)
+
     })
     let startX = 0;
     let startY = 0;
